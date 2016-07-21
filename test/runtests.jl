@@ -13,3 +13,15 @@ A = IndirectArray(index, colors)
 @test A[1,2] === A[3] === RGB(0,1,0)
 @test A[2,2] === A[4] === RGB(1,0,0)
 @test isa(eachindex(A), AbstractUnitRange)
+
+# Bounds checking upon construction
+index_ob = copy(index)
+index_ob[1] = 5   # out-of-bounds
+unsafe_ia(idx, vals) = (@inbounds ret = IndirectArray(idx, vals); ret)
+  safe_ia(idx, vals) = (ret = IndirectArray(idx, vals); ret)
+@test_throws BoundsError safe_ia(index_ob, colors)
+# This requires inlining, which means it fails on Travis since we turn
+# off inlining for better coverage stats
+# B = unsafe_ia(index_ob, colors)
+# @test_throws BoundsError B[1]
+# @test B[2] == RGB(0,0,1)

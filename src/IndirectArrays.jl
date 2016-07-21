@@ -12,7 +12,16 @@ values[index[i,j]]`.
 immutable IndirectArray{T,N} <: AbstractArray{T,N}
     index::Array{Int,N}
     values::Vector{T}
+
+    @inline function IndirectArray(index, values)
+        # The typical logic for testing bounds and then using
+        # @inbounds will not check whether index is inbounds for
+        # values. So we had better check this on construction.
+        @boundscheck checkbounds(values, index)
+        new(index, values)
+    end
 end
+Base.@propagate_inbounds IndirectArray{T,N}(index::Array{Int,N},values::Vector{T}) = IndirectArray{T,N}(index,values)
 
 Base.size(A::IndirectArray) = size(A.index)
 Base.linearindexing(A::IndirectArray) = Base.LinearFast()
