@@ -9,8 +9,8 @@ creates an array `A` where the values are looked up in the value table,
 `values`, using the `index`.  Concretely, `A[i,j] =
 values[index[i,j]]`.
 """
-immutable IndirectArray{T,N} <: AbstractArray{T,N}
-    index::Array{Int,N}
+immutable IndirectArray{T,N,I<:Integer} <: AbstractArray{T,N}
+    index::Array{I,N}
     values::Vector{T}
 
     @inline function IndirectArray(index, values)
@@ -21,7 +21,7 @@ immutable IndirectArray{T,N} <: AbstractArray{T,N}
         new(index, values)
     end
 end
-Base.@propagate_inbounds IndirectArray{T,N}(index::Array{Int,N},values::Vector{T}) = IndirectArray{T,N}(index,values)
+Base.@propagate_inbounds IndirectArray{T,N,I<:Integer}(index::Array{I,N},values::Vector{T}) = IndirectArray{T,N,I}(index,values)
 
 Base.size(A::IndirectArray) = size(A.index)
 Base.linearindexing(A::IndirectArray) = Base.LinearFast()
