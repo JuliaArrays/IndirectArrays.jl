@@ -1,8 +1,8 @@
 # IndirectArrays
 
-[![Build Status](https://travis-ci.org/timholy/IndirectArrays.jl.svg?branch=master)](https://travis-ci.org/timholy/IndirectArrays.jl)
+[![Build Status](https://travis-ci.org/JuliaArrays/IndirectArrays.jl.svg?branch=master)](https://travis-ci.org/JuliaArrays/IndirectArrays.jl)
 
-[![codecov.io](http://codecov.io/github/timholy/IndirectArrays.jl/coverage.svg?branch=master)](http://codecov.io/github/timholy/IndirectArrays.jl?branch=master)
+[![codecov.io](http://codecov.io/github/JuliaArrays/IndirectArrays.jl/coverage.svg?branch=master)](http://codecov.io/github/JuliaArrays/IndirectArrays.jl?branch=master)
 
 An `IndirectArray` is one that encodes data using a combination of an
 `index` and a `value` table. Each element is assigned its own index, which
