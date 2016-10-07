@@ -43,4 +43,4 @@ Note that `setindex!` is not supported: you cannot set the value of
 ## Related packages
 
 - [CategoricalArrays](https://github.com/nalimilan/CategoricalArrays.jl) offers an even more flexible interface for dealing with arrays in which values are looked up in an index.
-- [PooledArrays](https://github.com/JuliaComputing/PooledArrays.jl) supports `setindex!`., but requires that values be sorted.
+- [PooledArrays](https://github.com/JuliaComputing/PooledArrays.jl) supports `setindex!`, but requires that values be sorted.
