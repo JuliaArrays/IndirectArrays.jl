@@ -2,6 +2,8 @@ __precompile__(true)
 
 module IndirectArrays
 
+using Compat
+
 export IndirectArray
 
 """
@@ -15,18 +17,18 @@ immutable IndirectArray{T,N,I<:Integer} <: AbstractArray{T,N}
     index::Array{I,N}
     values::Vector{T}
 
-    @inline function IndirectArray(index, values)
+    @inline function (::Type{IndirectArray{T,N,I}}){T,N,I}(index, values)
         # The typical logic for testing bounds and then using
         # @inbounds will not check whether index is inbounds for
         # values. So we had better check this on construction.
         @boundscheck checkbounds(values, index)
-        new(index, values)
+        new{T,N,I}(index, values)
     end
 end
 Base.@propagate_inbounds IndirectArray{T,N,I<:Integer}(index::Array{I,N},values::Vector{T}) = IndirectArray{T,N,I}(index,values)
 
 Base.size(A::IndirectArray) = size(A.index)
-Base.linearindexing(A::IndirectArray) = Base.LinearFast()
+@compat Base.IndexStyle(::Type{<:IndirectArray}) = IndexLinear()
 
 @inline function Base.getindex(A::IndirectArray, i::Int)
     @boundscheck checkbounds(A.index, i)
