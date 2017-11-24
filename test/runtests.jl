@@ -1,4 +1,4 @@
-using IndirectArrays
+using IndirectArrays, MappedArrays
 using Base.Test, FixedPointNumbers, Colors
 
 colors = [RGB(1,0,0), RGB(0,1,0), RGB(0,0,1)]
@@ -27,3 +27,13 @@ unsafe_ia(idx, vals) = (@inbounds ret = IndirectArray(idx, vals); ret)
 # B = unsafe_ia(index_ob, colors)
 # @test_throws BoundsError B[1]
 # @test B[2] == RGB(0,0,1)
+
+# Non-Arrays
+a = [0.1 0.4;
+     0.33 1.0]
+f(x) = round(Int, 99*x) + 1   # maps 0-1 to 1-100
+m = mappedarray(f, a)
+cmap = colormap("RdBu", 100)
+img = IndirectArray(m, cmap)
+@test img == [cmap[11] cmap[41];
+              cmap[34] cmap[100]]
