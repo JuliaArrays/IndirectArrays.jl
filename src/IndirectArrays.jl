@@ -46,4 +46,38 @@ end
     ret
 end
 
+@inline function Base.setindex!(A::IndirectArray, x, i::Int)
+    @boundscheck checkbounds(A.index, i)
+    idx = findfirst(A.values, x)
+    if idx > 0
+        A.index[i] = idx
+    else
+        push!(A.values, x)
+        A.index[i] = length(A.values)
+    end
+    return A
+end
+
+@inline function Base.push!(A::IndirectArray{T,1} where T, x)
+    idx = findfirst(A.values, x)
+    if idx > 0
+        push!(A.index, idx)
+    else
+        push!(A.values, x)
+        push!(A.index, length(A.values))
+    end
+    return A
+end
+
+function Base.append!(A::IndirectArray{T,1}, B::IndirectArray{T,1}) where T
+    if A.values == B.values
+        append!(A.index, B.index)
+    else # pretty inefficient but let's get something going
+        for b in B
+            push!(A, b)
+        end
+    end
+    return A
+end
+
 end # module
