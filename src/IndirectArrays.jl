@@ -39,15 +39,6 @@ Base.IndexStyle(::Type{IndirectArray{T,N,A,V}}) where {T,N,A,V} = IndexStyle(A)
 
 Base.copy(A::IndirectArray) = IndirectArray(copy(A.index), copy(A.values))
 
-# To disambiguate
-@inline function Base.getindex(A::IndirectArray{<:Any,1}, i::Int)
-    @boundscheck checkbounds(A.index, i)
-    @inbounds idx = A.index[i]
-    @boundscheck checkbounds(A.values, idx)
-    @inbounds ret = A.values[idx]
-    ret
-end
-
 @inline function Base.getindex(A::IndirectArray, i::Int)
     @boundscheck checkbounds(A.index, i)
     @inbounds idx = A.index[i]
