@@ -1,11 +1,12 @@
 using IndirectArrays, MappedArrays
 using Base.Test, FixedPointNumbers, Colors
 
-colors = [RGB(1,0,0), RGB(0,1,0), RGB(0,0,1)]
-index0 = [1 2;
-          3 1]
-for index in (index0, map(Int16, index0))
-    A = IndirectArray(index, colors)
+colors = [RGB(1,0,0) RGB(0,1,0);
+          RGB(0,0,1) RGB(1,0,0)]
+index0 = [1 3;
+          2 1]
+for indexT in (Int8, Int16, UInt8, UInt16)
+    A = IndirectArray{indexT}(colors)
     @test eltype(A) == RGB{N0f8}
     @test size(A) == (2,2)
     @test ndims(A) == 2
@@ -14,14 +15,24 @@ for index in (index0, map(Int16, index0))
     @test A[1,2] === A[3] === RGB(0,1,0)
     @test A[2,2] === A[4] === RGB(1,0,0)
     @test isa(eachindex(A), AbstractUnitRange)
+    @test A.index == index0
 end
+x = IndirectArray(colors[:])
+@test x == IndirectArray{UInt8}(colors[:])
+xc = copy(x)
+@test x == xc
+xc[2], xc[3] = RGB(0,1,0), RGB(0,1,1)
+@test xc == IndirectArray([RGB(1,0,0), RGB(0,1,0), RGB(0,1,1), RGB(1,0,0)])
+@test append!(x, x)                           == IndirectArray([colors[:]; colors[:]])
+@test append!(x, IndirectArray([RGB(1,0,0), RGB(1,1,0)])) ==
+    IndirectArray([colors[:]; colors[:]; [RGB(1,0,0), RGB(1,1,0)]])
 
 # Bounds checking upon construction
 index_ob = copy(index0)
 index_ob[1] = 5   # out-of-bounds
 unsafe_ia(idx, vals) = (@inbounds ret = IndirectArray(idx, vals); ret)
   safe_ia(idx, vals) = (ret = IndirectArray(idx, vals); ret)
-@test_throws BoundsError safe_ia(index_ob, colors)
+@test_throws BoundsError safe_ia(index_ob, colors[1:3])
 # This requires inlining, which means it fails on Travis since we turn
 # off inlining for better coverage stats
 # B = unsafe_ia(index_ob, colors)
