@@ -58,22 +58,22 @@ end
 @inline function Base.setindex!(A::IndirectArray, x, i::Int)
     @boundscheck checkbounds(A.index, i)
     idx = findfirst(A.values, x)
-    if idx > 0
-        A.index[i] = idx
-    else
+    if idx == 0 || idx == nothing # findfird changed in 0.7
         push!(A.values, x)
         A.index[i] = length(A.values)
+    else
+        A.index[i] = idx
     end
     return A
 end
 
 @inline function Base.push!(A::IndirectArray{T,1} where T, x)
     idx = findfirst(A.values, x)
-    if idx > 0
-        push!(A.index, idx)
-    else
+    if idx == 0 || idx == nothing
         push!(A.values, x)
         push!(A.index, length(A.values))
+    else
+        push!(A.index, idx)
     end
     return A
 end
