@@ -2,6 +2,8 @@ __precompile__(true)
 
 module IndirectArrays
 
+using Compat
+
 export IndirectArray
 
 """
@@ -57,8 +59,8 @@ end
 
 @inline function Base.setindex!(A::IndirectArray, x, i::Int)
     @boundscheck checkbounds(A.index, i)
-    idx = findfirst(A.values, x)
-    if idx == 0 || idx == nothing # findfird changed in 0.7
+    idx = Compat.findfirst(A.values, x)
+    if idx == nothing
         push!(A.values, x)
         A.index[i] = length(A.values)
     else
@@ -68,8 +70,8 @@ end
 end
 
 @inline function Base.push!(A::IndirectArray{T,1} where T, x)
-    idx = findfirst(A.values, x)
-    if idx == 0 || idx == nothing
+    idx = Compat.findfirst(A.values, x)
+    if idx == nothing
         push!(A.values, x)
         push!(A.index, length(A.values))
     else
