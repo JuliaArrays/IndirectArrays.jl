@@ -30,7 +30,7 @@ Base.@propagate_inbounds IndirectArray(index::AbstractArray{<:Integer,N}, values
 
 function (::Type{IndirectArray{T}})(A::AbstractArray, values::AbstractVector = unique(A)) where {T}
     # Use map! to make sure that index is an Array
-    index = map!(t -> findfirst(values, t), Array{T}(size(A)...), A)
+    index = convert(Array{T}, indexin(A, values))
     return IndirectArray(index, values)
 end
 IndirectArray(A::AbstractArray, values::AbstractVector = unique(A)) = IndirectArray{UInt8}(A, values)
