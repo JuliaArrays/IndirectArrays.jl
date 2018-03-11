@@ -29,7 +29,6 @@ Base.@propagate_inbounds IndirectArray(index::AbstractArray{<:Integer,N}, values
     IndirectArray{T,N,typeof(index),typeof(values)}(index, values)
 
 function (::Type{IndirectArray{T}})(A::AbstractArray, values::AbstractVector = unique(A)) where {T}
-    # Use map! to make sure that index is an Array
     index = convert(Array{T}, indexin(A, values))
     return IndirectArray(index, values)
 end
