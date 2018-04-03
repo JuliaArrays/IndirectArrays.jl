@@ -27,12 +27,12 @@ struct IndirectArray{T,N,A<:AbstractArray{<:Integer,N},V<:AbstractVector{T}} <: 
 end
 Base.@propagate_inbounds IndirectArray(index::AbstractArray{<:Integer,N}, values::AbstractVector{T}) where {T,N} =
     IndirectArray{T,N,typeof(index),typeof(values)}(index, values)
-
-function (::Type{IndirectArray{T}})(A::AbstractArray, values::AbstractVector = unique(A)) where {T}
+function (::Type{IndirectArray{T}})(A::AbstractArray) where {T}
+    values = unique(A)
     index = convert(Array{T}, indexin(A, values))
     return IndirectArray(index, values)
 end
-IndirectArray(A::AbstractArray, values::AbstractVector = unique(A)) = IndirectArray{UInt8}(A, values)
+IndirectArray(A::AbstractArray) = IndirectArray{UInt8}(A)
 
 Base.size(A::IndirectArray) = size(A.index)
 Base.indices(A::IndirectArray) = indices(A.index)
