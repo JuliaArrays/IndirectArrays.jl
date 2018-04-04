@@ -23,7 +23,7 @@ xc = copy(x)
 @test x == xc
 xc[2], xc[3] = RGB(0,1,0), RGB(0,1,1)
 @test xc == IndirectArray([RGB(1,0,0), RGB(0,1,0), RGB(0,1,1), RGB(1,0,0)])
-@test append!(x, x)                           == IndirectArray([colors[:]; colors[:]])
+@test append!(x, x) == IndirectArray([colors[:]; colors[:]])
 @test append!(x, IndirectArray([RGB(1,0,0), RGB(1,1,0)])) ==
     IndirectArray([colors[:]; colors[:]; [RGB(1,0,0), RGB(1,1,0)]])
 
@@ -40,7 +40,7 @@ unsafe_ia(idx, vals) = (@inbounds ret = IndirectArray(idx, vals); ret)
 # @test B[2] == RGB(0,0,1)
 
 # Non-Arrays
-a = [0.1 0.4;
+a = [0.1  0.4;
      0.33 1.0]
 f(x) = round(Int, 99*x) + 1   # maps 0-1 to 1-100
 m = mappedarray(f, a)
