@@ -26,6 +26,9 @@ xc[2], xc[3] = RGB(0,1,0), RGB(0,1,1)
 @test append!(x, x) == IndirectArray([colors[:]; colors[:]])
 @test append!(x, IndirectArray([RGB(1,0,0), RGB(1,1,0)])) ==
     IndirectArray([colors[:]; colors[:]; [RGB(1,0,0), RGB(1,1,0)]])
+# Append with non-IndirectArray
+@test append!(IndirectArray(colors[:]), IndirectArray(colors[:])) ==
+      append!(IndirectArray(colors[:]), colors[:])
 
 # Bounds checking upon construction
 index_ob = copy(index0)

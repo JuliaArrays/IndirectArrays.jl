@@ -102,4 +102,11 @@ function Base.append!(A::IndirectArray{T,1}, B::IndirectArray{T,1}) where T
     return A
 end
 
+function Base.append!(A::IndirectArray{<:Any,1}, B::AbstractVector)
+    for b in B
+        push!(A, b)
+    end
+    return A
+end
+
 end # module
