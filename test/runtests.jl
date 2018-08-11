@@ -1,5 +1,5 @@
 using IndirectArrays, MappedArrays
-using Base.Test, FixedPointNumbers, Colors
+using Test, FixedPointNumbers, Colors
 
 colors = [RGB(1,0,0) RGB(0,1,0);
           RGB(0,0,1) RGB(1,0,0)]
