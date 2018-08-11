@@ -2,8 +2,6 @@ __precompile__(true)
 
 module IndirectArrays
 
-using Compat
-
 export IndirectArray
 
 """
@@ -27,7 +25,7 @@ struct IndirectArray{T,N,A<:AbstractArray{<:Integer,N},V<:AbstractVector{T}} <: 
 end
 Base.@propagate_inbounds IndirectArray(index::AbstractArray{<:Integer,N}, values::AbstractVector{T}) where {T,N} =
     IndirectArray{T,N,typeof(index),typeof(values)}(index, values)
-function (::Type{IndirectArray{T}})(A::AbstractArray) where {T}
+function IndirectArray{T}(A::AbstractArray) where {T}
     values = unique(A)
     index = convert(Array{T}, indexin(A, values))
     return IndirectArray(index, values)
@@ -35,22 +33,10 @@ end
 IndirectArray(A::AbstractArray) = IndirectArray{UInt8}(A)
 
 Base.size(A::IndirectArray) = size(A.index)
-Base.indices(A::IndirectArray) = indices(A.index)
+Base.axes(A::IndirectArray) = axes(A.index)
 Base.IndexStyle(::Type{IndirectArray{T,N,A,V}}) where {T,N,A,V} = IndexStyle(A)
 
 Base.copy(A::IndirectArray) = IndirectArray(copy(A.index), copy(A.values))
-
-if VERSION < v"0.6.3"
-    # This method is only necessary because of a bug in Julia 0.6.2 and can be removed
-    # when we no longer support that version
-    @inline function Base.getindex(A::IndirectArray{<:Any,1}, i::Int)
-        @boundscheck checkbounds(A.index, i)
-        @inbounds idx = A.index[i]
-        @boundscheck checkbounds(A.values, idx)
-        @inbounds ret = A.values[idx]
-        ret
-    end
-end
 
 @inline function Base.getindex(A::IndirectArray, i::Int)
     @boundscheck checkbounds(A.index, i)
@@ -70,7 +56,7 @@ end
 
 @inline function Base.setindex!(A::IndirectArray, x, i::Int)
     @boundscheck checkbounds(A.index, i)
-    idx = Compat.findfirst(A.values, x)
+    idx = findfirst(isequal(x), A.values)
     if idx == nothing
         push!(A.values, x)
         A.index[i] = length(A.values)
@@ -81,7 +67,7 @@ end
 end
 
 @inline function Base.push!(A::IndirectArray{T,1} where T, x)
-    idx = Compat.findfirst(A.values, x)
+    idx = findfirst(isequal(x), A.values)
     if idx == nothing
         push!(A.values, x)
         push!(A.index, length(A.values))

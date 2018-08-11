@@ -4,17 +4,15 @@ os:
   - linux
   - osx
 julia:
-  - 0.6
+  - 0.7
+  - 1.0
   - nightly
 notifications:
   email: false
-matrix:
-  allow_failures:
-  - julia: nightly
 # uncomment the following lines to override the default test script
 #script:
 #  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 #  - julia -e 'Pkg.clone(pwd()); Pkg.build("IndirectArrays"); Pkg.test("IndirectArrays"; coverage=true)'
 after_success:
   # push coverage results to Codecov
-  - julia -e 'cd(Pkg.dir("IndirectArrays")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia -e 'using Pkg, IndirectArrays; cd(joinpath(pathof(IndirectArrays), "..")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
