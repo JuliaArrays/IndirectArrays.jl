@@ -1,5 +1,6 @@
 name = "IndirectArrays"
 uuid = "9b13fd28-a010-5f03-acff-a1bbcff69959"
+version = "0.5.1"
 
 [deps]
 
