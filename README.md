@@ -37,10 +37,7 @@ which has only 6 colors in it.
 
 The `value` array can be of any type; it does not have to be color information.
 
-Note that `setindex!` is not supported: you cannot set the value of
-`A` to an arbitrary value, because the value has to be one of the values in the value table.
-
 ## Related packages
 
 - [CategoricalArrays](https://github.com/nalimilan/CategoricalArrays.jl) offers an even more flexible interface for dealing with arrays in which values are looked up in an index.
-- [PooledArrays](https://github.com/JuliaComputing/PooledArrays.jl) supports `setindex!`, but requires that values be sorted.
+- [PooledArrays](https://github.com/JuliaComputing/PooledArrays.jl)
