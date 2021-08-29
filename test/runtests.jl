@@ -1,4 +1,4 @@
-using IndirectArrays, MappedArrays
+using IndirectArrays, MappedArrays, OrderedCollections
 using Test, FixedPointNumbers, Colors
 
 colors = [RGB(1,0,0) RGB(0,1,0);
@@ -51,3 +51,14 @@ cmap = colormap("RdBu", 100)
 img = IndirectArray(m, cmap)
 @test img == [cmap[11] cmap[41];
               cmap[34] cmap[100]]
+
+# With Dicts
+a = ['a' 'b';
+     'q' 'j']
+v = freeze(Dict('a' => "apple", 'b' => "book", 'q' => "quit", 'j' => "jolly"))
+A = IndirectArray(a, v)
+@test A[1,1] == "apple"
+@test A[2,1] == "quit"
+@test A[1,2] == "book"
+@test A[2,2] == "jolly"
+@test_throws BoundsError IndirectArray(a, Dict('a' => "apple", 'b' => "book"))
